@@ -540,9 +540,12 @@ derecho::rpc::QueryResults<void> ServiceClient<CascadeTypes...>::trigger_put(
         }
     } else {
         std::lock_guard<std::mutex> lck(this->external_group_ptr_mutex);
+        global_timestamp_logger.log(20001,0,0,get_walltime());
         // call as an external client (ExternalClientCaller).
         auto& caller = external_group_ptr->template get_subgroup_caller<SubgroupType>(subgroup_index);
+        global_timestamp_logger.log(20002,0,0,get_walltime());
         node_id_t node_id = pick_member_by_policy<SubgroupType>(subgroup_index,shard_index);
+        global_timestamp_logger.log(20003,0,0,get_walltime());
         return caller.template p2p_send<RPC_NAME(trigger_put)>(node_id,value);
     }
 }
