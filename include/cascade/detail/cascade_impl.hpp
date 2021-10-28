@@ -482,6 +482,7 @@ uint64_t VolatileCascadeStore<KT,VT,IK,IV>::ordered_get_size(const KT& key) {
 
 template<typename KT, typename VT, KT* IK, VT* IV>
 void VolatileCascadeStore<KT,VT,IK,IV>::trigger_put(const VT& value) const {
+/*
     debug_enter_func_with_args("key={}",value.get_key_ref());
 
     if (cascade_watcher_ptr) {
@@ -492,6 +493,7 @@ void VolatileCascadeStore<KT,VT,IK,IV>::trigger_put(const VT& value) const {
     }
 
     debug_leave_func();
+ */
 }
 
 #ifdef ENABLE_EVALUATION
@@ -1149,6 +1151,7 @@ uint64_t PersistentCascadeStore<KT,VT,IK,IV,ST>::ordered_get_size(const KT& key)
 
 template<typename KT, typename VT, KT* IK, VT* IV, persistent::StorageType ST>
 void PersistentCascadeStore<KT,VT,IK,IV,ST>::trigger_put(const VT& value) const {
+/*
     debug_enter_func_with_args("key={}",value.get_key_ref());
 
     if (cascade_watcher_ptr) {
@@ -1159,6 +1162,7 @@ void PersistentCascadeStore<KT,VT,IK,IV,ST>::trigger_put(const VT& value) const 
     }
 
     debug_leave_func();
+*/
 }
 
 #ifdef ENABLE_EVALUATION
@@ -1340,6 +1344,7 @@ uint64_t TriggerCascadeNoStore<KT,VT,IK,IV>::ordered_get_size(const KT& key) {
 
 template<typename KT, typename VT, KT* IK, VT* IV>
 void TriggerCascadeNoStore<KT,VT,IK,IV>::trigger_put(const VT& value) const {
+/*
     debug_enter_func_with_args("key={}",value.get_key_ref());
     LOG_TIMESTAMP_BY_TAG(TLT_TRIGGER_PUT_START,group,value);
     
@@ -1353,6 +1358,7 @@ void TriggerCascadeNoStore<KT,VT,IK,IV>::trigger_put(const VT& value) const {
 
     LOG_TIMESTAMP_BY_TAG(TLT_TRIGGER_PUT_END,group,value);
     debug_leave_func();
+ */
 }
 
 #ifdef ENABLE_EVALUATION
