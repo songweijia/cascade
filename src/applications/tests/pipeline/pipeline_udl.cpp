@@ -51,6 +51,11 @@ class PipelineOCDPO: public OffCriticalDataPathObserver {
                 result.get();
             } else {
                 // normal put
+                global_timestamp_logger.log(TLT_PIPELINE((stage+100)),
+                        typed_ctxt->get_service_client_ref().get_my_id(),
+                        o.get_message_id(),
+                        get_walltime(),
+                        worker_id+stage*10000);
                 typed_ctxt->get_service_client_ref().put_and_forget(o);
             }
         }
