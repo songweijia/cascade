@@ -54,6 +54,9 @@ class CascadeServiceCDPO: public CriticalDataPathObserver<CascadeType> {
                 // important: we need to keep the trailing PATH_SEPARATOR
                 prefix = key.substr(0,pos+1);
             }
+#ifdef ENABLE_EVALUATION
+            global_timestamp_logger.log(8888,ctxt->get_service_client_ref().get_my_id(),value.get_message_id(),get_walltime());
+#endif // EVALUATION
             auto handlers = ctxt->get_prefix_handlers(prefix);
             if (handlers.empty()) {
                 return;
