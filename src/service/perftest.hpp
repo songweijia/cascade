@@ -202,7 +202,7 @@ bool PerfTestClient::perf_put(PutType               put_type,
                                object_pool_pathname,static_cast<uint32_t>(ec2cs),read_write_ratio,ops_threshold,duration_secs,output_filename);
     bool ret = true;
     // 1 - decides on shard membership policy for the "policy" and "user_specified_node_ids" argument for rpc calls.
-    ShardMemberSelectionPolicy policy;
+    ShardMemberSelectionPolicy policy = ShardMemberSelectionPolicy::Random;
     auto object_pool = capi.find_object_pool(object_pool_pathname);
     if (!object_pool.is_valid() || object_pool.is_null()) {
         throw derecho::derecho_exception("Cannot find object pool:" + object_pool_pathname);
@@ -232,26 +232,30 @@ bool PerfTestClient::perf_put(PutType               put_type,
         break;
     };
     // 2 - send requests and wait for response
+
+    std::string rpc_cmd{};
+    switch(put_type){
+    case PutType::PUT:
+        rpc_cmd = "perf_put_to_objectpool";
+        break;
+    case PutType::PUT_AND_FORGET:
+        rpc_cmd = "perf_put_and_forget_to_objectpool";
+        break;
+    case PutType::TRIGGER_PUT:
+        rpc_cmd = "perf_trigger_put_to_objectpool";
+        break;
+    }
+    int64_t start_sec = static_cast<int64_t>(get_walltime())/1e9 + 5; // wait for 5 second so that the rpc servers are started.
+
     std::map<std::pair<std::string,uint16_t>,std::future<RPCLIB_MSGPACK::object_handle>> futures;
     for (auto& kv: connections) {
-        std::string rpc_cmd{};
-        switch(put_type){
-        case PutType::PUT:
-            rpc_cmd = "perf_put_to_objectpool";
-            break;
-        case PutType::PUT_AND_FORGET:
-            rpc_cmd = "perf_put_and_forget_to_objectpool";
-            break;
-        case PutType::TRIGGER_PUT:
-            rpc_cmd = "perf_trigger_put_to_objectpool";
-            break;
-        }
         futures.emplace(kv.first,kv.second->async_call(rpc_cmd,
                                                        object_pool_pathname,
                                                        static_cast<uint32_t>(policy),
                                                        user_specified_node_ids.at(kv.first),
                                                        read_write_ratio,
                                                        ops_threshold,
+                                                       start_sec,
                                                        duration_secs,
                                                        output_filename));
     }
@@ -281,7 +285,7 @@ bool PerfTestClient::perf_put(PutType   put_type,
                                subgroup_index,shard_index,static_cast<uint32_t>(ec2cs),read_write_ratio,ops_threshold,duration_secs,output_filename);
     bool ret = true;
     // 1 - decides on shard membership policy for the "policy" and "user_specified_node_ids" argument for rpc calls.
-    ShardMemberSelectionPolicy policy;
+    ShardMemberSelectionPolicy policy = ShardMemberSelectionPolicy::Random;
     std::map<std::pair<std::string,uint16_t>,node_id_t> user_specified_node_ids;
     switch(ec2cs) {
     case ExternalClientToCascadeServerMapping::FIXED:
@@ -319,12 +323,15 @@ bool PerfTestClient::perf_put(PutType   put_type,
         break;
     }
 
+    int64_t start_sec = static_cast<int64_t>(get_walltime())/1e9 + 5; // wait for 5 second so that the rpc servers are started.
+
     for (auto& kv: connections) {
         futures.emplace(kv.first,kv.second->async_call(rpc_cmd,
                                                        capi.template get_subgroup_type_index<SubgroupType>(),
                                                        subgroup_index,shard_index,static_cast<uint32_t>(policy),
                                                        user_specified_node_ids.at(kv.first),read_write_ratio,
-                                                       ops_threshold,duration_secs,output_filename));
+                                                       ops_threshold,
+                                                       start_sec, duration_secs,output_filename));
     }
     ret = check_rpc_futures(std::move(futures));
 
