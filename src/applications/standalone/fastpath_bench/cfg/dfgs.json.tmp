@@ -1,0 +1,16 @@
+[
+    {
+        "id": "c7cb6458-6c53-11ee-a93d-0242ac110003",
+        "desc": "console_printer DFG",
+        "graph": [
+            {
+                "pathname": "/fastpath/micro/benchmark/",
+                "shard_dispatcher_list": ["one"],
+                "user_defined_logic_hook_list": ["both"],
+                "user_defined_logic_stateful_list": ["stateless"],
+                "user_defined_logic_list": ["909343a0-6c50-11ee-afcd-0242ac110003"],
+                "destinations": [{}]
+            }
+        ]
+    }
+]
