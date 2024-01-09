@@ -1729,6 +1729,7 @@ void ServiceClient<CascadeTypes...>::refresh_object_pool_metadata_cache() {
                     refreshed_metadata.emplace(key,opm_reply.second.get());
                     break;
                 }
+                std::cerr << __FILE__ << ":" << __LINE__ << " refreshed_metadata:" << key << std::endl;
             }
             break;
         }
@@ -1822,9 +1823,13 @@ ObjectPoolMetadata<CascadeTypes...> ServiceClient<CascadeTypes...>::internal_fin
     for (const auto& comp: components) {
         prefix = prefix + PATH_SEPARATOR + comp;
         if (object_pool_metadata_cache.find(prefix) != object_pool_metadata_cache.end()) {
+            std::cerr << __FILE__ << ":" << __LINE__ << " Found pool:" << pathname << std::endl;
             return object_pool_metadata_cache.at(prefix).opm;
         }
     }
+
+    std::cerr << __FILE__ << ":" << __LINE__ << " Failed to get pool:" << pathname << std::endl;
+
     return ObjectPoolMetadata<CascadeTypes...>::IV;
 }
 
