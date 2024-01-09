@@ -1791,11 +1791,13 @@ derecho::rpc::QueryResults<version_tuple> ServiceClient<CascadeTypes...>::remove
         }
         opm.deleted = true;
         opm.set_previous_version(CURRENT_VERSION,opm.version); // only check previous_version_by_key
+        std::cerr << __FILE__ << ":" << __LINE__ << std::endl;
         return this->template put<CascadeMetadataService<CascadeTypes...>>(opm,METADATA_SERVICE_SUBGROUP_INDEX,metadata_service_shard_index);
     }
 
     // we didn't find the object pool, but we do the normal 'remove', which has no effect but return a version.
     dbg_default_warn("deleteing a non-existing objectpool:{}.", pathname);
+    std::cerr << __FILE__ << ":" << __LINE__ << std::endl;
     return this->template remove<CascadeMetadataService<CascadeTypes...>>(pathname,METADATA_SERVICE_SUBGROUP_INDEX,metadata_service_shard_index);
 }
 
