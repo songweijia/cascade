@@ -1798,7 +1798,7 @@ derecho::rpc::QueryResults<version_tuple> ServiceClient<CascadeTypes...>::remove
 
     // we didn't find the object pool, but we do the normal 'remove', which has no effect but return a version.
     dbg_default_warn("deleteing a non-existing objectpool:{}.", pathname);
-    std::cerr << __FILE__ << ":" << __LINE__ << "\t deleting a non-existing object pool:" << pathname << std::endl;
+    std::cerr << __FILE__ << ":" << __LINE__ << "\t deleting a non-existing object pool:" << opm << std::endl;
     return this->template remove<CascadeMetadataService<CascadeTypes...>>(pathname,METADATA_SERVICE_SUBGROUP_INDEX,metadata_service_shard_index);
 }
 
@@ -1811,6 +1811,8 @@ ObjectPoolMetadata<CascadeTypes...> ServiceClient<CascadeTypes...>::internal_fin
     for (const auto& comp: components) {
         prefix = prefix + PATH_SEPARATOR + comp;
         if (object_pool_metadata_cache.find(prefix) != object_pool_metadata_cache.end()) {
+            std::cerr << __FILE__ << ":" << __LINE__ << " Found pool(1):"
+                      << object_pool_metadata_cache.at(prefix).opm;
             return object_pool_metadata_cache.at(prefix).opm;
         }
     }
@@ -1823,7 +1825,8 @@ ObjectPoolMetadata<CascadeTypes...> ServiceClient<CascadeTypes...>::internal_fin
     for (const auto& comp: components) {
         prefix = prefix + PATH_SEPARATOR + comp;
         if (object_pool_metadata_cache.find(prefix) != object_pool_metadata_cache.end()) {
-            std::cerr << __FILE__ << ":" << __LINE__ << " Found pool:" << pathname << std::endl;
+            std::cerr << __FILE__ << ":" << __LINE__ << " Found pool(2):"
+                      << object_pool_metadata_cache.at(prefix).opm;
             return object_pool_metadata_cache.at(prefix).opm;
         }
     }
