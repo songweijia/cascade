@@ -1799,6 +1799,11 @@ derecho::rpc::QueryResults<version_tuple> ServiceClient<CascadeTypes...>::remove
     // we didn't find the object pool, but we do the normal 'remove', which has no effect but return a version.
     dbg_default_warn("deleteing a non-existing objectpool:{}.", pathname);
     std::cerr << __FILE__ << ":" << __LINE__ << "\t deleting a non-existing object pool:" << opm << " fop_tag = " << fop_tag << std::endl;
+    std::cerr << "DUMP object_pool_metadata_cache:" << std::endl;
+    for (auto& kv: this->object_pool_metadata_cache) {
+        std::cerr << kv.first << std::endl;
+        std::cerr << kv.second.opm << std::endl;
+    }
     return this->template remove<CascadeMetadataService<CascadeTypes...>>(pathname,METADATA_SERVICE_SUBGROUP_INDEX,metadata_service_shard_index);
 }
 
