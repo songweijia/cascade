@@ -1804,8 +1804,13 @@ derecho::rpc::QueryResults<version_tuple> ServiceClient<CascadeTypes...>::remove
         std::cerr << kv.first << std::endl;
         std::cerr << kv.second.opm << std::endl;
     }
-    std::cerr << "DUMP Before:" << std::endl;
-    for (auto& kv: this->before_object_pool_metadata_cache) {
+    std::cerr << "DUMP Before 1:" << std::endl;
+    for (auto& kv: this->before1_object_pool_metadata_cache) {
+        std::cerr << kv.first << std::endl;
+        std::cerr << kv.second.opm << std::endl;
+    }
+    std::cerr << "DUMP Before 2:" << std::endl;
+    for (auto& kv: this->before2_object_pool_metadata_cache) {
         std::cerr << kv.first << std::endl;
         std::cerr << kv.second.opm << std::endl;
     }
@@ -1876,13 +1881,14 @@ std::pair<ObjectPoolMetadata<CascadeTypes...>,std::string> ServiceClient<Cascade
 
 template <typename... CascadeTypes>
 std::vector<std::string> ServiceClient<CascadeTypes...>::list_object_pools(bool include_deleted, bool refresh) {
+    this->before1_object_pool_metadata_cache = this->object_pool_metadata_cache;
     if (refresh) {
         this->refresh_object_pool_metadata_cache();
     }
+    this->before2_object_pool_metadata_cache = this->object_pool_metadata_cache;
 
     std::vector<std::string> ret;
     std::shared_lock rlck(this->object_pool_metadata_cache_mutex);
-    this->before_object_pool_metadata_cache = this->object_pool_metadata_cache;
     for (auto& op:this->object_pool_metadata_cache) {
         if (op.second.opm.deleted) {
             if (include_deleted) {
