@@ -1729,7 +1729,6 @@ void ServiceClient<CascadeTypes...>::refresh_object_pool_metadata_cache() {
                     refreshed_metadata.emplace(key,opm_reply.second.get());
                     break;
                 }
-                std::cerr << __FILE__ << ":" << __LINE__ << " refreshed_metadata:" << key << std::endl;
             }
             break;
         }
