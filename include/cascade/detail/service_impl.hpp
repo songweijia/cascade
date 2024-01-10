@@ -1811,8 +1811,6 @@ ObjectPoolMetadata<CascadeTypes...> ServiceClient<CascadeTypes...>::internal_fin
     for (const auto& comp: components) {
         prefix = prefix + PATH_SEPARATOR + comp;
         if (object_pool_metadata_cache.find(prefix) != object_pool_metadata_cache.end()) {
-            std::cerr << __FILE__ << ":" << __LINE__ << " Found pool(1):"
-                      << object_pool_metadata_cache.at(prefix).opm;
             return object_pool_metadata_cache.at(prefix).opm;
         }
     }
@@ -1825,13 +1823,9 @@ ObjectPoolMetadata<CascadeTypes...> ServiceClient<CascadeTypes...>::internal_fin
     for (const auto& comp: components) {
         prefix = prefix + PATH_SEPARATOR + comp;
         if (object_pool_metadata_cache.find(prefix) != object_pool_metadata_cache.end()) {
-            std::cerr << __FILE__ << ":" << __LINE__ << " Found pool(2):"
-                      << object_pool_metadata_cache.at(prefix).opm;
             return object_pool_metadata_cache.at(prefix).opm;
         }
     }
-
-    std::cerr << __FILE__ << ":" << __LINE__ << " Failed to get pool:" << pathname << std::endl;
 
     return ObjectPoolMetadata<CascadeTypes...>::IV;
 }
