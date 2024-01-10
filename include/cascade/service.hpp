@@ -464,6 +464,7 @@ namespace cascade {
     class ServiceClient {
         static_assert(have_same_object_type<CascadeTypes...>());
     private:
+        uint64_t fop_tag;
         // default caller as an external client.
         std::unique_ptr<derecho::ExternalGroupClient<CascadeMetadataService<CascadeTypes...>,CascadeTypes...>> external_group_ptr;
         mutable std::mutex external_group_ptr_mutex;

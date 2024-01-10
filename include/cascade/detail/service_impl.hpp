@@ -163,6 +163,7 @@ ServiceClient<CascadeTypes...>::ServiceClient(derecho::Group<CascadeMetadataServ
                     client_stub_factory<CascadeMetadataService<CascadeTypes...>>,
                     client_stub_factory<CascadeTypes>...);
     }
+    fop_tag = __LINE__;
 }
 
 template <typename... CascadeTypes>
@@ -1797,7 +1798,7 @@ derecho::rpc::QueryResults<version_tuple> ServiceClient<CascadeTypes...>::remove
 
     // we didn't find the object pool, but we do the normal 'remove', which has no effect but return a version.
     dbg_default_warn("deleteing a non-existing objectpool:{}.", pathname);
-    std::cerr << __FILE__ << ":" << __LINE__ << "\t deleting a non-existing object pool:" << opm << std::endl;
+    std::cerr << __FILE__ << ":" << __LINE__ << "\t deleting a non-existing object pool:" << opm << " fop_tag = " << fop_tag << std::endl;
     return this->template remove<CascadeMetadataService<CascadeTypes...>>(pathname,METADATA_SERVICE_SUBGROUP_INDEX,metadata_service_shard_index);
 }
 
@@ -1810,6 +1811,7 @@ ObjectPoolMetadata<CascadeTypes...> ServiceClient<CascadeTypes...>::internal_fin
     for (const auto& comp: components) {
         prefix = prefix + PATH_SEPARATOR + comp;
         if (object_pool_metadata_cache.find(prefix) != object_pool_metadata_cache.end()) {
+            this->fop_tag = __LINE__;
             return object_pool_metadata_cache.at(prefix).opm;
         }
     }
@@ -1822,10 +1824,12 @@ ObjectPoolMetadata<CascadeTypes...> ServiceClient<CascadeTypes...>::internal_fin
     for (const auto& comp: components) {
         prefix = prefix + PATH_SEPARATOR + comp;
         if (object_pool_metadata_cache.find(prefix) != object_pool_metadata_cache.end()) {
+            this->fop_tag = __LINE__;
             return object_pool_metadata_cache.at(prefix).opm;
         }
     }
 
+    this->fop_tag = __LINE__;
     return ObjectPoolMetadata<CascadeTypes...>::IV;
 }
 
