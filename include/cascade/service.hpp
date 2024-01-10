@@ -1367,6 +1367,7 @@ namespace cascade {
 
         /**
          * Object Pool Management API: refresh object pool cache
+         * Please note that we will load unstable (those are submitted but not persisted yet.) to local cache too.
          */
         void refresh_object_pool_metadata_cache();
 
