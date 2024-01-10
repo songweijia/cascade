@@ -1798,9 +1798,19 @@ derecho::rpc::QueryResults<version_tuple> ServiceClient<CascadeTypes...>::remove
 
     // we didn't find the object pool, but we do the normal 'remove', which has no effect but return a version.
     dbg_default_warn("deleteing a non-existing objectpool:{}.", pathname);
-    std::cerr << __FILE__ << ":" << __LINE__ << "\t deleting a non-existing object pool:" << opm << " fop_tag = " << fop_tag << std::endl;
-    std::cerr << "DUMP object_pool_metadata_cache:" << std::endl;
+    std::cerr << __FILE__ << ":" << __LINE__ << "\t deleting a non-existing object pool(" << pathname << ")" << opm << " fop_tag = " << fop_tag << std::endl;
+    std::cerr << "DUMP object_pool_metadata_caches:" << std::endl;
     for (auto& kv: this->object_pool_metadata_cache) {
+        std::cerr << kv.first << std::endl;
+        std::cerr << kv.second.opm << std::endl;
+    }
+    std::cerr << "DUMP Before:" << std::endl;
+    for (auto& kv: this->before_object_pool_metadata_cache) {
+        std::cerr << kv.first << std::endl;
+        std::cerr << kv.second.opm << std::endl;
+    }
+    std::cerr << "DUMP After:" << std::endl;
+    for (auto& kv: this->after_object_pool_metadata_cache) {
         std::cerr << kv.first << std::endl;
         std::cerr << kv.second.opm << std::endl;
     }
@@ -1872,6 +1882,7 @@ std::vector<std::string> ServiceClient<CascadeTypes...>::list_object_pools(bool 
 
     std::vector<std::string> ret;
     std::shared_lock rlck(this->object_pool_metadata_cache_mutex);
+    this->before_object_pool_metadata_cache = this->object_pool_metadata_cache;
     for (auto& op:this->object_pool_metadata_cache) {
         if (op.second.opm.deleted) {
             if (include_deleted) {
@@ -1881,6 +1892,7 @@ std::vector<std::string> ServiceClient<CascadeTypes...>::list_object_pools(bool 
             ret.emplace_back(op.first);
         }
     }
+    this->after_object_pool_metadata_cache = this->object_pool_metadata_cache;
 
     return ret;
 }

@@ -537,6 +537,12 @@ namespace cascade {
             std::string,
             ObjectPoolMetadataCacheEntry> object_pool_metadata_cache;
         mutable std::shared_mutex object_pool_metadata_cache_mutex;
+        mutable std::unordered_map<
+            std::string,
+            ObjectPoolMetadataCacheEntry> before_object_pool_metadata_cache;
+        mutable std::unordered_map<
+            std::string,
+            ObjectPoolMetadataCacheEntry> after_object_pool_metadata_cache;
 
         /**
          * Pick a member by a given a policy.
